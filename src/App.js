@@ -1,24 +1,34 @@
-import logo from './logo.svg';
-import './App.css';
+import { Button, Container, Stack } from "@chakra-ui/react";
+import "./App.css";
+import Product from "./components/product";
+import axios from "axios";
+import { useState } from "react";
 
 function App() {
+  const [products, setProducts] = useState([]);
+
+  const onShowProducts = async () => {
+    const { data } = await axios.get("/api/products");
+    setProducts(data);
+  };
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <Container maxW="md" color="black">
+        <Button colorScheme="teal" size="lg" m={5} onClick={onShowProducts}>
+          Get Products
+        </Button>
+        <Stack spacing={8} direction="column">
+          {products.map((prod) => (
+            <Product
+              key={prod.id}
+              name={prod.name}
+              description={prod.description}
+              price={prod.price}
+            />
+          ))}
+        </Stack>
+      </Container>
+    </>
   );
 }
 
